@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplier Form for <%= companyName %></title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-weight: bold;
+            color: #555;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        input:focus {
+            outline: none;
+            border-color: #00aaff;
+        }
+        button {
+            background-color: #00aaff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #008ecc;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .optional {
+            color: #888;
+            font-size: 14px;
+        }
+        .small-text {
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Supplier Form for <%= companyName %></h1>
+    
+    <form action="/submit/<%= companyName %>" method="POST">
+        <div class="form-group">
+            <label for="supplierID">Supplier ID:</label>
+            <input type="text" id="supplierID" name="supplierID" placeholder="Enter Supplier ID" required>
+        </div>
+
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter Supplier Name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="company">Company:</label>
+            <input type="text" id="company" name="company" placeholder="Enter Company Name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter Email Address" required>
+            <p class="small-text">Example: supplier@company.com</p>
+        </div>
+
+        <div class="form-group">
+            <label for="company_phone_number">Company Phone:</label>
+            <input type="text" id="company_phone_number" name="company_phone_number" placeholder="Enter Company Phone Number">
+        </div>
+
+        <div class="form-group">
+            <label for="mobile_phone_number">Mobile Phone: <span class="optional">(Optional)</span></label>
+            <input type="text" id="mobile_phone_number" name="mobile_phone_number" placeholder="Enter Mobile Phone Number">
+        </div>
+
+        <div class="form-group">
+            <label for="core_business">Core Business:</label>
+            <input type="text" id="core_business" name="core_business" placeholder="Enter Core Business" required>
+        </div>
+
+        <div class="form-group">
+            <label for="website">Website: <span class="optional">(Optional)</span></label>
+            <input type="text" id="website" name="website" placeholder="www.example.com">
+            <p class="small-text">Include www.//</p>
+        </div>
+
+        <div class="form-group">
+            <label for="postcode">Postcode: <span class="optional">(Optional)</span></label>
+            <input type="text" id="postcode" name="postcode" placeholder="Enter Postcode">
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+</body>
+</html>

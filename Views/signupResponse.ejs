@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign-Up Success</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+        }
+
+        .logo {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+        }
+
+        p {
+            font-size: 1.2em;
+            color: #555;
+        }
+
+        .custom-link {
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-top: 20px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .custom-link:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        footer {
+            margin-top: 50px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">SupplierDB</div>
+    </header>
+
+    <div class="container">
+        <h1>Welcome, <%= companyName %>!</h1>
+        <p>Thank you for signing up. Your company has been successfully registered.</p>
+        <p>You can access your Supplier Sign Up Form using the link below or share this link  - <%= customURL %> </p>
+        <a class="custom-link" href="<%= customURL %>">Go to Your Supplier Sign Up Form</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 SupplierDB. All rights reserved.</p>
+    </footer>
+</body>
+</html>
+

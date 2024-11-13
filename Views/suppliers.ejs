@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplier List</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Supplier List</h1>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Supplier ID</th>
+                <th>Name</th>
+                <th>Company</th>
+                <th>Email</th>
+                <th>Company Phone Number</th>
+                <th>Mobile Phone Number</th>
+                <th>Core Business</th>
+                <th>Website</th>
+                <th>Postal Code</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% suppliers.forEach(supplier => { %>
+            <tr>
+                <td><%= supplier.supplierID %></td>
+                <td><%= supplier.name %></td>
+                <td><%= supplier.company %></td>
+                <td><%= supplier.email %></td>
+                <td><%= supplier.company_phone_number %></td>
+                <td><%= supplier.mobile_phone_number %></td>
+                <td><%= supplier.core_business %></td>
+                <td><%= supplier.website %></td>
+                <td><%= supplier.postcode %></td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+    <!-- Add the Download button -->
+    <br>
+    <a href="/download">
+        <button type="button">Download Excel File</button>
+    </a>
+
+</body>
+</html>
