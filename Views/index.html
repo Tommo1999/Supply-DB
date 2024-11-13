@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SupplierDB Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+        }
+
+        .logo {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .container {
+            margin-top: 50px; /* Adjust this to move the buttons down */
+        }
+
+        h1 {
+            font-size: 2.5em; /* or any size you prefer */
+        }
+
+        p {
+            margin-bottom: 40px; /* Adjust this to increase space between the text and buttons */
+            font-size: 1.2em;
+        }
+
+        .button-container {
+            display: flex; /* Use flexbox for centering */
+            flex-direction: column; /* Stack buttons vertically */
+            align-items: center; /* Center align the buttons */
+            margin-top: 20px; /* Space between text and buttons */
+        }
+
+        button, a {
+            display: inline-block; /* Makes the buttons inline-block */
+            padding: 15px 20px; /* Adjusted padding for a more compact look */
+            font-size: 1.2em;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            margin: 10px 0; /* Added margin for spacing above and below */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            text-decoration: none; /* Removes underlining on links */
+            width: 200px; /* Set a fixed width for consistent button size */
+            text-align: center; /* Center align text */
+        }
+
+        button:hover, a:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        footer {
+            margin-top: 50px;
+            color: #888;
+        }
+
+        .two-line {
+            display: block; /* Makes the text wrap */
+            line-height: 1.2; /* Adjust line height to control spacing */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">SupplierDB</div>
+        <!-- Mockup Logo (could be replaced with an image later) -->
+    </header>
+
+    <div class="container">
+        <h1>Welcome to SupplierDB</h1>
+        <p>The easiest way to manage your suppliers and their data.</p>
+
+        <!-- Button container to center align the buttons -->
+        <div class="button-container">
+            <a href="/signup" class="two-line">Create A<br>Customer Account</a>
+            <a href="/login">Log In</a> 
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 SupplierDB. All rights reserved.</p>
+    </footer>
+</body>
+</html>
+
+

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Login</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+        }
+
+        .logo {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+        }
+
+        form {
+            display: inline-block;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 5px;
+            color: #333;
+        }
+
+        input[type="email"], input[type="password"] {
+            width: 80%;
+            padding: 10px;
+            font-size: 1em;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .login-button {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-button:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Forgot Password button styling */
+        .forgot-password {
+            display: block;
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #007BFF;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password:hover {
+            color: #0056b3;
+        }
+
+        footer {
+            margin-top: 50px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">SupplierDB</div>
+    </header>
+
+    <div class="container">
+        <h1>Customer Login</h1>
+        <form action="/customer/login" method="POST">
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit" class="login-button">Login</button>
+            
+            <!-- Forgot Password link under the Login button -->
+            <a href="/forgot-password" class="forgot-password">Forgot your password?</a>
+        </form>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 SupplierDB. All rights reserved.</p>
+    </footer>
+</body>
+</html>
+
+

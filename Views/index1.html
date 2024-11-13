@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplier Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .form-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 500px;
+            text-align: left;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        label {
+            width: 150px;
+            margin-right: 10px;
+        }
+        input {
+            flex: 1;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Supplier Information</h1>
+        <form action="/submit" method="POST">
+            <div class="form-group">
+                <label for="supplierID">Supplier ID:</label>
+                <input type="text" id="supplierID" name="supplierID" required>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="company">Company:</label>
+                <input type="text" id="company" name="company" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="company_phone_number">Company Phone:</label>
+                <input type="tel" id="company_phone_number" name="company_phone_number" required>
+            </div>
+
+            <div class="form-group">
+                <label for="mobile_phone_number">Mobile Phone:</label>
+                <input type="tel" id="mobile_phone_number" name="mobile_phone_number">
+            </div>
+
+            <div class="form-group">
+                <label for="core_business">Core Services/Products:</label>
+                <input type="text" id="core_business" name="core_business" required>
+            </div>
+
+            <div class="form-group">
+                <label for="website">Website:</label>
+                <input type="text" id="website" name="website">
+            </div>
+
+            <div class="form-group">
+                <label for="postcode">Post Code:</label>
+                <input type="text" id="postcode" name="postcode">
+            </div>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

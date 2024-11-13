@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Selection</title>
+    <style>
+        /* Basic styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        /* Header styling */
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+        }
+
+        .logo {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        /* Container for content */
+        .container {
+            margin-top: 50px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+        }
+
+        p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        /* Button styling */
+        .login-button {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            margin: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Button hover effect */
+        .login-button:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Footer styling */
+        footer {
+            margin-top: 50px;
+            color: #888;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">SupplierDB</div>
+    </header>
+
+    <div class="container">
+        <h1>Select Login Type</h1>
+        <p>Please choose whether you are a supplier or a customer.</p>
+
+        <!-- Supplier Login Button -->
+        <button class="login-button" onclick="location.href='/supplier/login'">
+            Supplier Login
+        </button>
+
+        <!-- Customer Login Button -->
+        <button class="login-button" onclick="location.href='/customer/login'">
+            Customer Login
+        </button>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 SupplierDB. All rights reserved.</p>
+    </footer>
+</body>
+</html>
