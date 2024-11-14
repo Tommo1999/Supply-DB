@@ -17,6 +17,15 @@ app.set('views', __dirname + '/views');
 // MongoDB Connection URL
 const uri = 'mongodb+srv://webform_user:WebForm@project1.poswy.mongodb.net/supplier_db?retryWrites=true&w=majority';
 
+// Check environment variables
+if (!process.env.PROJECT_DOMAIN) {
+    console.error("Environment variable PROJECT_DOMAIN is not set. Password reset links will not work.");
+}
+
+if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
+    console.error("Nodemailer credentials (GMAIL_USER, GMAIL_PASS) are missing.");
+}
+
 // Connect to MongoDB
 MongoClient.connect(uri)
     .then(client => {
@@ -206,13 +215,13 @@ MongoClient.connect(uri)
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
-                    user: 'youremail@gmail.com',
-                    pass: 'yourpassword',
+                    user: process.env.GMAIL_USER,
+                    pass: process.env.GMAIL_PASS,
                 },
             });
 
             const mailOptions = {
-                from: 'youremail@gmail.com',
+                from: process.env.GMAIL_USER,
                 to: email,
                 subject: 'Password Reset',
                 html: `<p>You requested a password reset. Click <a href="${resetURL}">here</a> to reset your password.</p>`,
@@ -233,4 +242,7 @@ MongoClient.connect(uri)
             console.log(`Server is running on port ${PORT}`);
         });
     })
-    .catch(error => console.error(error));
+    .catch(error => {
+        console.error('Error connecting to MongoDB:', error);
+        process.exit(1); // Exit the application if DB connection fails
+    });
