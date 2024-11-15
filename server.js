@@ -7,8 +7,8 @@ const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
 const path = require('path');
 
-const PORT = 3000;  // Hardcoded port
-const uri = 'your-mongo-uri-here';  // Replace with your MongoDB URI
+const PORT = process.env.PORT || 3000;
+const uri = 'project1.poswy.mongodb.net';  // Replace with your MongoDB URI
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
