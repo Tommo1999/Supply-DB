@@ -6,27 +6,15 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
 const path = require('path');
-const dotenv = require('dotenv');
 
-dotenv.config(); // Load environment variables from .env file
-
-const PORT = process.env.PORT || 3000;
-const uri = process.env.MONGODB_URI || 'your-mongo-uri-here';
+const PORT = 3000;  // Hardcoded port
+const uri = 'your-mongo-uri-here';  // Replace with your MongoDB URI
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static('public'));
-
-// Check environment variables
-if (!process.env.PROJECT_DOMAIN) {
-    console.error("Environment variable PROJECT_DOMAIN is not set. Password reset links will not work.");
-}
-
-if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
-    console.error("Nodemailer credentials (GMAIL_USER, GMAIL_PASS) are missing.");
-}
 
 // MongoDB Connection
 MongoClient.connect(uri)
@@ -81,17 +69,17 @@ MongoClient.connect(uri)
 
                 await usersCollection.updateOne({ email }, { $set: { resetToken, resetTokenExpiry } });
 
-                const resetURL = `https://${process.env.PROJECT_DOMAIN}.glitch.me/reset-password/${resetToken}`;
+                const resetURL = `https://your-domain.com/reset-password/${resetToken}`;  // Hardcoded domain
                 const transporter = nodemailer.createTransport({
                     service: 'gmail',
                     auth: {
-                        user: process.env.GMAIL_USER,
-                        pass: process.env.GMAIL_PASS,
+                        user: 'your-gmail-user',  // Hardcoded Gmail user
+                        pass: 'your-gmail-password',  // Hardcoded Gmail password
                     },
                 });
 
                 const mailOptions = {
-                    from: process.env.GMAIL_USER,
+                    from: 'your-gmail-user',
                     to: email,
                     subject: 'Password Reset',
                     html: `<p>You requested a password reset. Click <a href="${resetURL}">here</a> to reset your password.</p>`,
