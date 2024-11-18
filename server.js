@@ -11,11 +11,21 @@ const PORT = process.env.PORT || 3000;
 const uri = "mongodb+srv://webform_user:WebForm@project1.poswy.mongodb.net/supplier_db?retryWrites=true&w=majority";
 
 
+const express = require('express');
+const path = require('path');
+
 const app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
+
+// Use Express' built-in URL-encoded parser (bodyParser is deprecated)
+app.use(express.urlencoded({ extended: true }));
+
+// Set EJS as the view engine and specify views directory
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
+// Serve static files from the public directory
 app.use(express.static('public'));
+
 
 // MongoDB Connection
 MongoClient.connect(uri)
