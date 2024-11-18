@@ -5,11 +5,14 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
 const path = require('path');
-require('dotenv').config();  // Import dotenv to load environment variables
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-const uri = "mongodb+srv://webform_user:WebForm@project1.poswy.mongodb.net/supplier_db?retryWrites=true&w=majority";
+const PORT = 3000; // Hardcoded port
+const uri = "mongodb+srv://webform_user:WebForm@project1.poswy.mongodb.net/supplier_db?retryWrites=true&w=majority"; // Hardcoded MongoDB URI
+
+// Gmail credentials hardcoded
+const GMAIL_USER = "your-email@gmail.com";  // Hardcoded Gmail user
+const GMAIL_PASS = "your-email-password";  // Hardcoded Gmail password
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
@@ -73,13 +76,13 @@ MongoClient.connect(uri)
         const transporter = nodemailer.createTransport({
           service: 'gmail',
           auth: {
-            user: process.env.GMAIL_USER,  // Use environment variable for Gmail user
-            pass: process.env.GMAIL_PASS,  // Use environment variable for Gmail password
+            user: GMAIL_USER,  // Using hardcoded Gmail user
+            pass: GMAIL_PASS,  // Using hardcoded Gmail password
           },
         });
 
         const mailOptions = {
-          from: process.env.GMAIL_USER,
+          from: GMAIL_USER,
           to: email,
           subject: 'Password Reset',
           html: `<p>You requested a password reset. Click <a href="${resetURL}">here</a> to reset your password.</p>`,
