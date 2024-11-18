@@ -8,7 +8,8 @@ const bcrypt = require('bcryptjs');
 const path = require('path');
 
 const PORT = process.env.PORT || 3000;
-const uri = 'project1.poswy.mongodb.net';  // Replace with your MongoDB URI
+const uri = "mongodb+srv://tommor99:Wallace%40Gromit99@project1.poswy.mongodb.net/supplier_db?retryWrites=true&w=majority";
+
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
