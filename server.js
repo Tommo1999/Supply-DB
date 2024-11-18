@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 const path = require('path');
 
 const PORT = process.env.PORT || 3000;
-const uri = "mongodb+srv://tommor99:Wallace%40Gromit99@project1.poswy.mongodb.net/supplier_db?retryWrites=true&w=majority";
+const uri = "mongodb+srv://webform_user:WebForm@project1.poswy.mongodb.net/supplier_db?retryWrites=true&w=majority";
 
 
 const app = express();
