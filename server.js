@@ -11,9 +11,8 @@ const PORT = process.env.PORT || 3000;
 const uri = "mongodb+srv://webform_user:WebForm@project1.poswy.mongodb.net/supplier_db?retryWrites=true&w=majority";
 
 
-const express = require('express');
+const app = express();
 const path = require('path');
-
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
