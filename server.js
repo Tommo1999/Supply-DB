@@ -15,15 +15,9 @@ const express = require('express');
 const path = require('path');
 
 const app = express();
-
-// Use Express' built-in URL-encoded parser (bodyParser is deprecated)
-app.use(express.urlencoded({ extended: true }));
-
-// Set EJS as the view engine and specify views directory
+app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-
-// Serve static files from the public directory
 app.use(express.static('public'));
 
 
