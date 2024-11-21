@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const { MongoClient } = require('mongodb');
 const ExcelJS = require('exceljs');
@@ -5,20 +6,37 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
 const path = require('path');
+const Joi = require('joi');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
-const PORT = 3000; // Hardcoded port
-const uri = "mongodb+srv://webform_user:WebForm@project1.poswy.mongodb.net/supplier_db?retryWrites=true&w=majority"; // Hardcoded MongoDB URI
 
-// Gmail credentials hardcoded
-const GMAIL_USER = "your-email@gmail.com";  // Hardcoded Gmail user
-const GMAIL_PASS = "your-email-password";  // Hardcoded Gmail password
+// Environment Variables
+const PORT = process.env.PORT || 3000;
+const uri = process.env.MONGO_URI;
+const GMAIL_USER = process.env.GMAIL_USER;
+const GMAIL_PASS = process.env.GMAIL_PASS;
+
+if (!uri || !GMAIL_USER || !GMAIL_PASS) {
+  console.error("Missing required environment variables. Please check your .env file.");
+  process.exit(1);
+}
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static('public'));
+app.use(helmet());
+
+// Rate Limiting Middleware
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests
+});
+app.use('/signup', limiter);
+app.use('/forgot-password', limiter);
 
 // MongoDB Connection
 MongoClient.connect(uri)
@@ -35,12 +53,24 @@ MongoClient.connect(uri)
     app.get('/signup', (req, res) => res.sendFile(path.join(__dirname, 'signup.html')));
     app.get('/forgot-password', (req, res) => res.sendFile(path.join(__dirname, 'forgot-password.html')));
 
+    // Signup Route with Validation
     app.post('/signup', async (req, res) => {
-      const { name, email, companyName, password } = req.body;
-      const collectionName = companyName.toLowerCase().replace(/\s+/g, '');
+      const signupSchema = Joi.object({
+        name: Joi.string().min(3).required(),
+        email: Joi.string().email().required(),
+        companyName: Joi.string().min(2).required(),
+        password: Joi.string().min(8).regex(/[a-zA-Z0-9]{3,30}/).required(),
+      });
+
+      const { error, value } = signupSchema.validate(req.body);
+      if (error) {
+        return res.status(400).send(error.details[0].message);
+      }
+
+      const { name, email, companyName, password } = value;
+      const collectionName = crypto.createHash('sha256').update(companyName.toLowerCase().trim()).digest('hex');
 
       try {
-        // Check if the collection already exists
         const collections = await db.listCollections().toArray();
         const collectionExists = collections.some(collection => collection.name === collectionName);
 
@@ -59,6 +89,7 @@ MongoClient.connect(uri)
       }
     });
 
+    // Forgot Password Route with Hashed Reset Token
     app.post('/forgot-password', async (req, res) => {
       const { email } = req.body;
 
@@ -69,15 +100,16 @@ MongoClient.connect(uri)
         }
 
         const resetToken = crypto.randomBytes(32).toString('hex');
+        const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
         const resetTokenExpiry = Date.now() + 3600000;
-        await usersCollection.updateOne({ email }, { $set: { resetToken, resetTokenExpiry } });
+        await usersCollection.updateOne({ email }, { $set: { resetToken: hashedToken, resetTokenExpiry } });
 
         const resetURL = `https://your-domain.com/reset-password/${resetToken}`;
         const transporter = nodemailer.createTransport({
           service: 'gmail',
           auth: {
-            user: GMAIL_USER,  // Using hardcoded Gmail user
-            pass: GMAIL_PASS,  // Using hardcoded Gmail password
+            user: GMAIL_USER,
+            pass: GMAIL_PASS,
           },
         });
 
@@ -122,7 +154,7 @@ MongoClient.connect(uri)
     });
 
     app.get('/download/:company', async (req, res) => {
-      const companyName = req.params.company;
+      const companyName = req.params.company.toLowerCase();
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet('Suppliers');
 
@@ -139,12 +171,22 @@ MongoClient.connect(uri)
       ];
 
       try {
-        const collection = db.collection(companyName.toLowerCase());
+        const collection = db.collection(companyName);
         const suppliers = await collection.find().toArray();
 
-        suppliers.forEach(supplier => {
-          worksheet.addRow(supplier);
-        });
+        const formattedSuppliers = suppliers.map(s => ({
+          supplierID: s.supplierID || 'N/A',
+          name: s.name || '',
+          company: s.company || '',
+          email: s.email || '',
+          company_phone_number: s.company_phone_number || '',
+          mobile_phone_number: s.mobile_phone_number || '',
+          core_business: s.core_business || '',
+          website: s.website || '',
+          postcode: s.postcode || '',
+        }));
+
+        worksheet.addRows(formattedSuppliers);
 
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', `attachment; filename=${companyName}_suppliers.xlsx`);
@@ -161,11 +203,15 @@ MongoClient.connect(uri)
   })
   .catch(error => {
     console.error('Error connecting to MongoDB:', error.message);
-    process.exit(1); // Exit the application if DB connection fails
+    process.exit(1);
   });
 
-// General error handling middleware
+// General Error Handling Middleware
 app.use((err, req, res, next) => {
-  console.error('Unhandled Error:', err.stack);
-  res.status(500).send('Internal Server Error');
+  if (process.env.NODE_ENV === 'development') {
+    console.error('Unhandled Error:', err.stack);
+    res.status(500).send(`Error: ${err.message}`);
+  } else {
+    res.status(500).send('Internal Server Error');
+  }
 });
