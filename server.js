@@ -1,4 +1,3 @@
-require('dotenv').config();
 const express = require('express');
 const { MongoClient } = require('mongodb');
 const ExcelJS = require('exceljs');
@@ -12,14 +11,14 @@ const rateLimit = require('express-rate-limit');
 
 const app = express();
 
-// Environment Variables
-const PORT = process.env.PORT || 3000;
-const uri = process.env.MONGO_URI;
-const GMAIL_USER = process.env.GMAIL_USER;
-const GMAIL_PASS = process.env.GMAIL_PASS;
+// Replace environment variables with hardcoded values
+const PORT = 3000; // Replace with your desired port number
+const uri = "mongodb+srv://webform_user:WebForm@project1.poswy.mongodb.net/supplier_db?retryWrites=true&w=majority"; // Replace with your MongoDB connection string
+const GMAIL_USER = "your-gmail-user"; // Replace with your Gmail username
+const GMAIL_PASS = "your-gmail-password"; // Replace with your Gmail password
 
 if (!uri || !GMAIL_USER || !GMAIL_PASS) {
-  console.error("Missing required environment variables. Please check your .env file.");
+  console.error("Missing required configuration variables. Please set the values directly in the code.");
   process.exit(1);
 }
 
@@ -208,10 +207,6 @@ MongoClient.connect(uri)
 
 // General Error Handling Middleware
 app.use((err, req, res, next) => {
-  if (process.env.NODE_ENV === 'development') {
-    console.error('Unhandled Error:', err.stack);
-    res.status(500).send(`Error: ${err.message}`);
-  } else {
-    res.status(500).send('Internal Server Error');
-  }
+  console.error('Unhandled Error:', err.stack);
+  res.status(500).send('Internal Server Error');
 });
