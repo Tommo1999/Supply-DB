@@ -8,26 +8,29 @@ const path = require('path');
 
 const app = express();
 
-// Replace environment variables with hardcoded values
-const PORT = process.env.PORT || 3000; // Use Heroku's PORT or default to 3000 locally
-const uri = "mongodb+srv://webform_user:WebForm@project1.poswy.mongodb.net/supplier_db?retryWrites=true&w=majority"; // Replace with your MongoDB connection string
-const GMAIL_USER = "your-gmail-user"; // Replace with your Gmail username
-const GMAIL_PASS = "your-gmail-password"; // Replace with your Gmail password
+// Replace environment variables with hardcoded values 
+const PORT = process.env.PORT || 3000; // Use Heroku's PORT or default to 3000 locally 
+const uri = "mongodb+srv://webform_user:WebForm@project1.poswy.mongodb.net/supplier_db?retryWrites=true&w=majority"; // Replace with your MongoDB connection string 
+const GMAIL_USER = "your-gmail-user"; // Replace with your Gmail username 
+const GMAIL_PASS = "your-gmail-password"; // Replace with your Gmail password 
 
-if (!uri || !GMAIL_USER || !GMAIL_PASS) {
-  console.error("Missing required configuration variables. Please set the values directly in the code.");
-  process.exit(1);
+if (!uri || !GMAIL_USER || !GMAIL_PASS) { 
+console.error("Missing required configuration variables. Please set the values directly in the code."); 
+process.exit(1); 
 }
+
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // To handle JSON requests
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static('public'));
 
 // MongoDB Connection
-MongoClient.connect(uri)
-  .then(client => {
+(async () => {
+  try {
+    const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     console.log('Connected to Database');
     const db = client.db('supplier_db');
     const usersCollection = db.collection('users');
@@ -40,7 +43,7 @@ MongoClient.connect(uri)
     app.get('/signup', (req, res) => res.sendFile(path.join(__dirname, 'signup.html')));
     app.get('/forgot-password', (req, res) => res.sendFile(path.join(__dirname, 'forgot-password.html')));
 
-    // Signup Route without Joi
+    // Signup Route
     app.post('/signup', async (req, res) => {
       const { name, email, companyName, password } = req.body;
 
@@ -88,7 +91,7 @@ MongoClient.connect(uri)
 
         const resetToken = crypto.randomBytes(32).toString('hex');
         const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-        const resetTokenExpiry = Date.now() + 3600000;
+        const resetTokenExpiry = Date.now() + 3600000; // 1 hour
         await usersCollection.updateOne({ email }, { $set: { resetToken: hashedToken, resetTokenExpiry } });
 
         const resetURL = `https://your-domain.com/reset-password/${resetToken}`;
@@ -187,12 +190,13 @@ MongoClient.connect(uri)
     });
 
     app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  })
-  .catch(error => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  } catch (error) {
     console.error('Error connecting to MongoDB:', error.message);
     process.exit(1);
-  });
+  }
+})();
 
 // General Error Handling Middleware
 app.use((err, req, res, next) => {
