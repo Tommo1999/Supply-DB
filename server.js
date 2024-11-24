@@ -9,7 +9,7 @@ const path = require('path');
 const app = express();
 
 // Replace environment variables with hardcoded values
-const PORT = 3000; // Replace with your desired port number
+const PORT = process.env.PORT || 3000; // Use Heroku's PORT or default to 3000 locally
 const uri = "mongodb+srv://webform_user:WebForm@project1.poswy.mongodb.net/supplier_db?retryWrites=true&w=majority"; // Replace with your MongoDB connection string
 const GMAIL_USER = "your-gmail-user"; // Replace with your Gmail username
 const GMAIL_PASS = "your-gmail-password"; // Replace with your Gmail password
@@ -186,7 +186,8 @@ MongoClient.connect(uri)
       }
     });
 
-    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+    app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
   })
   .catch(error => {
     console.error('Error connecting to MongoDB:', error.message);
