@@ -5,9 +5,6 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
 const path = require('path');
-const Joi = require('joi');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
 
 const app = express();
 
@@ -27,15 +24,6 @@ app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static('public'));
-app.use(helmet());
-
-// Rate Limiting Middleware
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests
-});
-app.use('/signup', limiter);
-app.use('/forgot-password', limiter);
 
 // MongoDB Connection
 MongoClient.connect(uri)
@@ -52,21 +40,17 @@ MongoClient.connect(uri)
     app.get('/signup', (req, res) => res.sendFile(path.join(__dirname, 'signup.html')));
     app.get('/forgot-password', (req, res) => res.sendFile(path.join(__dirname, 'forgot-password.html')));
 
-    // Signup Route with Validation
+    // Signup Route without Joi
     app.post('/signup', async (req, res) => {
-      const signupSchema = Joi.object({
-        name: Joi.string().min(3).required(),
-        email: Joi.string().email().required(),
-        companyName: Joi.string().min(2).required(),
-        password: Joi.string().min(8).regex(/[a-zA-Z0-9]{3,30}/).required(),
-      });
+      const { name, email, companyName, password } = req.body;
 
-      const { error, value } = signupSchema.validate(req.body);
-      if (error) {
-        return res.status(400).send(error.details[0].message);
+      if (!name || name.length < 3 || 
+          !email || !email.includes('@') || 
+          !companyName || companyName.length < 2 || 
+          !password || password.length < 8) {
+        return res.status(400).send('Invalid input. Please ensure all fields are correctly filled.');
       }
 
-      const { name, email, companyName, password } = value;
       const collectionName = crypto.createHash('sha256').update(companyName.toLowerCase().trim()).digest('hex');
 
       try {
@@ -88,9 +72,13 @@ MongoClient.connect(uri)
       }
     });
 
-    // Forgot Password Route with Hashed Reset Token
+    // Forgot Password Route
     app.post('/forgot-password', async (req, res) => {
       const { email } = req.body;
+
+      if (!email || !email.includes('@')) {
+        return res.status(400).send('Invalid email address.');
+      }
 
       try {
         const user = await usersCollection.findOne({ email });
