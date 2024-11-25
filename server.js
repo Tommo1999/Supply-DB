@@ -76,7 +76,7 @@ app.post('/signup', async (req, res) => {
     // Generate Custom URL
     const customURL = HEROKU_APP_NAME
       ? `https://${HEROKU_APP_NAME}.herokuapp.com/${collectionName}`
-      : `http://supplydb.com/${PORT}/${collectionName}`;
+      : `http://supplydb.com/${collectionName}`;
 
     // Debug logging
     console.log('Company Name:', companyName);
