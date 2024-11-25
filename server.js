@@ -48,6 +48,7 @@ app.use(express.static('public'));
     app.post('/signup', async (req, res) => {
       const { name, email, companyName, password } = req.body;
 
+      // Input Validation
       if (!name || name.length < 3 ||
         !email || !email.includes('@') ||
         !companyName || companyName.length < 2 ||
@@ -55,11 +56,13 @@ app.use(express.static('public'));
         return res.status(400).send('Invalid input. Please ensure all fields are correctly filled.');
       }
 
+      // Generate Collection Name
       const collectionName = crypto.createHash('sha256').update(companyName.toLowerCase().trim()).digest('hex').slice(0, 24); // Ensure collection name is valid
 
       try {
         console.log('Creating collection with name:', collectionName);
 
+        // Check if the collection already exists
         const collections = await db.listCollections().toArray();
         const collectionExists = collections.some(collection => collection.name === collectionName);
 
@@ -67,10 +70,17 @@ app.use(express.static('public'));
           await db.createCollection(collectionName);
         }
 
+        // Hash Password and Save User
         const hashedPassword = await bcrypt.hash(password, 10);
         await usersCollection.insertOne({ name, email, companyName, password: hashedPassword });
 
+        // Generate Custom URL
         const customURL = `http://localhost:${PORT}/${collectionName}`;
+
+        // Ensure data is valid before rendering
+        console.log('Company Name:', companyName);
+        console.log('Custom URL:', customURL);
+
         res.render('signupResponse', { companyName, customURL }, (err, html) => {
           if (err) {
             console.error('Render error in signupResponse:', err);
@@ -212,5 +222,4 @@ app.use((err, req, res, next) => {
   console.error('Unhandled Error:', err.stack);
   res.status(500).send('Internal Server Error');
 });
-
 
