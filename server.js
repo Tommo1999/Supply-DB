@@ -14,6 +14,7 @@ const PORT = process.env.PORT || 3000; // Use Heroku's PORT or default to 3000 l
 const MONGO_URI = process.env.MONGO_URI; // MongoDB connection string
 const GMAIL_USER = process.env.GMAIL_USER; // Gmail username
 const GMAIL_PASS = process.env.GMAIL_PASS; // Gmail password
+const HEROKU_APP_NAME = process.env.HEROKU_APP_NAME || ''; // Heroku app name for dynamic URL generation
 
 // Check if all necessary environmental variables are defined
 if (!MONGO_URI || !GMAIL_USER || !GMAIL_PASS) {
@@ -75,9 +76,11 @@ app.use(express.static('public'));
         await usersCollection.insertOne({ name, email, companyName, password: hashedPassword });
 
         // Generate Custom URL
-        const customURL = `http://localhost:${PORT}/${collectionName}`;
+        const customURL = HEROKU_APP_NAME
+          ? `https://${HEROKU_APP_NAME}.herokuapp.com/${collectionName}`
+          : `http://localhost:${PORT}/${collectionName}`;
 
-        // Ensure data is valid before rendering
+        // Debug logging
         console.log('Company Name:', companyName);
         console.log('Custom URL:', customURL);
 
@@ -113,7 +116,10 @@ app.use(express.static('public'));
         const resetTokenExpiry = Date.now() + 3600000; // 1 hour
         await usersCollection.updateOne({ email }, { $set: { resetToken: hashedToken, resetTokenExpiry } });
 
-        const resetURL = `https://your-domain.com/reset-password/${resetToken}`;
+        const resetURL = HEROKU_APP_NAME
+          ? `https://${HEROKU_APP_NAME}.herokuapp.com/reset-password/${resetToken}`
+          : `http://localhost:${PORT}/reset-password/${resetToken}`;
+
         const transporter = nodemailer.createTransport({
           service: 'gmail',
           auth: {
@@ -222,4 +228,5 @@ app.use((err, req, res, next) => {
   console.error('Unhandled Error:', err.stack);
   res.status(500).send('Internal Server Error');
 });
+
 
