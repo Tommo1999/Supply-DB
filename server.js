@@ -15,6 +15,7 @@ const MONGO_URI = process.env.MONGO_URI; // MongoDB connection string
 const GMAIL_USER = process.env.GMAIL_USER; // Gmail username
 const GMAIL_PASS = process.env.GMAIL_PASS; // Gmail password
 
+// Check if all necessary environmental variables are defined
 if (!MONGO_URI || !GMAIL_USER || !GMAIL_PASS) {
   console.error("Missing required configuration variables. Please set them in the environment or .env file.");
   process.exit(1);
@@ -211,4 +212,5 @@ app.use((err, req, res, next) => {
   console.error('Unhandled Error:', err.stack);
   res.status(500).send('Internal Server Error');
 });
+
 
