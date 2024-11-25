@@ -46,52 +46,53 @@ app.use(express.static('public'));
     app.get('/forgot-password', (req, res) => res.sendFile(path.join(__dirname, 'forgot-password.html')));
 
     // Signup Route
-    app.post('/signup', async (req, res) => {
-      const { name, email, companyName, password } = req.body;
+app.post('/signup', async (req, res) => {
+  const { name, email, companyName, password } = req.body;
 
-   // Input Validation
-   if (!email || !email.includes('@')) {
-  return res.status(400).send('Invalid email address. Please ensure it contains an @ symbol.');
+  // Input Validation
+  if (!email || !email.includes('@')) {
+    return res.status(400).send('Invalid email address. Please ensure it contains an @ symbol.');
+  }
 
-      // Generate Collection Name (no hashing)
-     const collectionName = companyName.toLowerCase().trim().slice(0, 24);
+  // Generate Collection Name (no hashing)
+  const collectionName = companyName.toLowerCase().trim().slice(0, 24);
 
-      try {
-        console.log('Creating collection with name:', collectionName);
+  try {
+    console.log('Creating collection with name:', collectionName);
 
-        // Check if the collection already exists
-        const collections = await db.listCollections().toArray();
-        const collectionExists = collections.some(collection => collection.name === collectionName);
+    // Check if the collection already exists
+    const collections = await db.listCollections().toArray();
+    const collectionExists = collections.some(collection => collection.name === collectionName);
 
-        if (!collectionExists) {
-          await db.createCollection(collectionName);
-        }
+    if (!collectionExists) {
+      await db.createCollection(collectionName);
+    }
 
-        // Hash Password and Save User
-        const hashedPassword = await bcrypt.hash(password, 10);
-        await usersCollection.insertOne({ name, email, companyName, password: hashedPassword });
+    // Hash Password and Save User
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await usersCollection.insertOne({ name, email, companyName, password: hashedPassword });
 
-        // Generate Custom URL
-        const customURL = HEROKU_APP_NAME
-          ? `https://${HEROKU_APP_NAME}.herokuapp.com/${collectionName}`
-          : `http://localhost:${PORT}/${collectionName}`;
+    // Generate Custom URL
+    const customURL = HEROKU_APP_NAME
+      ? `https://${HEROKU_APP_NAME}.herokuapp.com/${collectionName}`
+      : `http://localhost:${PORT}/${collectionName}`;
 
-        // Debug logging
-        console.log('Company Name:', companyName);
-        console.log('Custom URL:', customURL);
+    // Debug logging
+    console.log('Company Name:', companyName);
+    console.log('Custom URL:', customURL);
 
-        res.render('signupResponse', { companyName, customURL }, (err, html) => {
-          if (err) {
-            console.error('Render error in signupResponse:', err);
-            return res.status(500).send('Template rendering failed. Please try again.');
-          }
-          res.send(html);
-        });
-      } catch (error) {
-        console.error('Error in signup route:', error);
-        res.status(500).send('Error creating your company account. Please try again.');
+    res.render('signupResponse', { companyName, customURL }, (err, html) => {
+      if (err) {
+        console.error('Render error in signupResponse:', err);
+        return res.status(500).send('Template rendering failed. Please try again.');
       }
+      res.send(html);
     });
+  } catch (error) {
+    console.error('Error in signup route:', error);
+    res.status(500).send('Error creating your company account. Please try again.');
+  }
+});
 
     // Forgot Password Route
     app.post('/forgot-password', async (req, res) => {
