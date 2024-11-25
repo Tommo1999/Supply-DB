@@ -1,3 +1,4 @@
+require('dotenv').config(); // Load environment variables from .env file
 const express = require('express');
 const { MongoClient } = require('mongodb');
 const ExcelJS = require('exceljs');
@@ -8,17 +9,16 @@ const path = require('path');
 
 const app = express();
 
-// Replace environment variables with hardcoded values 
-const PORT = process.env.PORT || 3000; // Use Heroku's PORT or default to 3000 locally 
-const uri = "mongodb+srv://webform_user:WebForm@project1.poswy.mongodb.net/supplier_db?retryWrites=true&w=majority"; // Replace with your MongoDB connection string 
-const GMAIL_USER = "your-gmail-user"; // Replace with your Gmail username 
-const GMAIL_PASS = "your-gmail-password"; // Replace with your Gmail password 
+// Environmental Variables
+const PORT = process.env.PORT || 3000; // Use Heroku's PORT or default to 3000 locally
+const MONGO_URI = process.env.MONGO_URI; // MongoDB connection string
+const GMAIL_USER = process.env.GMAIL_USER; // Gmail username
+const GMAIL_PASS = process.env.GMAIL_PASS; // Gmail password
 
-if (!uri || !GMAIL_USER || !GMAIL_PASS) { 
-console.error("Missing required configuration variables. Please set the values directly in the code."); 
-process.exit(1); 
+if (!MONGO_URI || !GMAIL_USER || !GMAIL_PASS) {
+  console.error("Missing required configuration variables. Please set them in the environment or .env file.");
+  process.exit(1);
 }
-
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
@@ -30,7 +30,7 @@ app.use(express.static('public'));
 // MongoDB Connection
 (async () => {
   try {
-    const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    const client = await MongoClient.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
     console.log('Connected to Database');
     const db = client.db('supplier_db');
     const usersCollection = db.collection('users');
@@ -47,16 +47,18 @@ app.use(express.static('public'));
     app.post('/signup', async (req, res) => {
       const { name, email, companyName, password } = req.body;
 
-      if (!name || name.length < 3 || 
-          !email || !email.includes('@') || 
-          !companyName || companyName.length < 2 || 
-          !password || password.length < 8) {
+      if (!name || name.length < 3 ||
+        !email || !email.includes('@') ||
+        !companyName || companyName.length < 2 ||
+        !password || password.length < 8) {
         return res.status(400).send('Invalid input. Please ensure all fields are correctly filled.');
       }
 
-      const collectionName = crypto.createHash('sha256').update(companyName.toLowerCase().trim()).digest('hex');
+      const collectionName = crypto.createHash('sha256').update(companyName.toLowerCase().trim()).digest('hex').slice(0, 24); // Ensure collection name is valid
 
       try {
+        console.log('Creating collection with name:', collectionName);
+
         const collections = await db.listCollections().toArray();
         const collectionExists = collections.some(collection => collection.name === collectionName);
 
@@ -68,7 +70,13 @@ app.use(express.static('public'));
         await usersCollection.insertOne({ name, email, companyName, password: hashedPassword });
 
         const customURL = `http://localhost:${PORT}/${collectionName}`;
-        res.render('signupResponse', { companyName, customURL });
+        res.render('signupResponse', { companyName, customURL }, (err, html) => {
+          if (err) {
+            console.error('Render error in signupResponse:', err);
+            return res.status(500).send('Template rendering failed. Please try again.');
+          }
+          res.send(html);
+        });
       } catch (error) {
         console.error('Error in signup route:', error);
         res.status(500).send('Error creating your company account. Please try again.');
@@ -203,3 +211,4 @@ app.use((err, req, res, next) => {
   console.error('Unhandled Error:', err.stack);
   res.status(500).send('Internal Server Error');
 });
+
