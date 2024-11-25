@@ -45,7 +45,7 @@ app.use(express.static('public'));
     app.get('/signup', (req, res) => res.sendFile(path.join(__dirname, 'signup.html')));
     app.get('/forgot-password', (req, res) => res.sendFile(path.join(__dirname, 'forgot-password.html')));
 
-    // Signup Route
+ // Signup Route
 app.post('/signup', async (req, res) => {
   const { name, email, companyName, password } = req.body;
 
@@ -54,8 +54,9 @@ app.post('/signup', async (req, res) => {
     return res.status(400).send('Invalid email address. Please ensure it contains an @ symbol.');
   }
 
-  // Generate Collection Name (no hashing)
-  const collectionName = companyName.toLowerCase().trim().slice(0, 24);
+  // Remove numbers from company name before generating collection name
+  const cleanCompanyName = companyName.toLowerCase().replace(/\d+/g, '').trim(); // Remove digits
+  const collectionName = cleanCompanyName.slice(0, 24); // Ensure it's not longer than 24 characters
 
   try {
     console.log('Creating collection with name:', collectionName);
@@ -75,7 +76,7 @@ app.post('/signup', async (req, res) => {
     // Generate Custom URL
     const customURL = HEROKU_APP_NAME
       ? `https://${HEROKU_APP_NAME}.herokuapp.com/${collectionName}`
-      : `http://localhost:${PORT}/${collectionName}`;
+      : `http://supplydb.com/${PORT}/${collectionName}`;
 
     // Debug logging
     console.log('Company Name:', companyName);
@@ -93,6 +94,7 @@ app.post('/signup', async (req, res) => {
     res.status(500).send('Error creating your company account. Please try again.');
   }
 });
+
 
     // Forgot Password Route
     app.post('/forgot-password', async (req, res) => {
