@@ -49,16 +49,12 @@ app.use(express.static('public'));
     app.post('/signup', async (req, res) => {
       const { name, email, companyName, password } = req.body;
 
-      // Input Validation
-      if (!name || name.length < 3 ||
-        !email || !email.includes('@') ||
-        !companyName || companyName.length < 2 ||
-        !password || password.length < 8) {
-        return res.status(400).send('Invalid input. Please ensure all fields are correctly filled.');
-      }
+   // Input Validation
+   if (!email || !email.includes('@')) {
+  return res.status(400).send('Invalid email address. Please ensure it contains an @ symbol.');
 
-      // Generate Collection Name
-      const collectionName = crypto.createHash('sha256').update(companyName.toLowerCase().trim()).digest('hex').slice(0, 24); // Ensure collection name is valid
+      // Generate Collection Name (no hashing)
+     const collectionName = companyName.toLowerCase().trim().slice(0, 24);
 
       try {
         console.log('Creating collection with name:', collectionName);
