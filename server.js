@@ -62,6 +62,9 @@ const connectToDB = async () => {
 
 // Application Logic
 (async () => {
+  console.log(`PORT environment variable: ${PORT}`); // Log the value of PORT
+  console.log('Starting server...'); // Indicate server startup process
+  
   const db = await connectToDB();
   const usersCollection = db.collection('users');
 
@@ -72,6 +75,9 @@ const connectToDB = async () => {
   app.get('/customer/login', (req, res) => res.sendFile(path.join(__dirname, 'customer-login.html')));
   app.get('/signup', (req, res) => res.sendFile(path.join(__dirname, 'signup.html')));
   app.get('/forgot-password', (req, res) => res.sendFile(path.join(__dirname, 'forgot-password.html')));
+
+  // Health Check Route
+  app.get('/health', (req, res) => res.send('Server is running and healthy!'));
 
   // Signup Route
   app.post('/signup', async (req, res) => {
@@ -169,10 +175,10 @@ const connectToDB = async () => {
     }
   });
 
-  // Additional routes here...
-
   app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Test server connectivity: curl http://localhost:${PORT}/health`);
   });
 })();
+
 
