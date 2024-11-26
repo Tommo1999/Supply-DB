@@ -110,10 +110,10 @@ const connectToDB = async () => {
       const hashedPassword = await bcrypt.hash(password, 10);
       await usersCollection.insertOne({ name, email, companyName, password: hashedPassword });
 
-      // Generate custom URL
-      const customURL = HEROKU_APP_NAME
-        ? `https://${HEROKU_APP_NAME}.herokuapp.com/${collectionName}`
-        : `http://supplydb:${PORT}/${collectionName}`;
+    // Generate custom URL
+const customURL = HEROKU_APP_NAME
+  ? `https://${HEROKU_APP_NAME}.herokuapp.com/${collectionName}`
+  : `http://supplydb/${collectionName}`;
 
       res.render('signupResponse', { companyName, customURL });
     } catch (error) {
