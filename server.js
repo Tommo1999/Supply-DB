@@ -6,7 +6,6 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
 const path = require('path');
-const helmet = require('helmet'); // Add security headers
 const rateLimit = require('express-rate-limit'); // Rate limiting
 
 const app = express();
@@ -25,7 +24,6 @@ if (!MONGO_URI || !GMAIL_USER || !GMAIL_PASS) {
 }
 
 // Middleware
-app.use(helmet()); // Add security headers
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // To handle JSON requests
 app.set('view engine', 'ejs');
@@ -186,5 +184,6 @@ const connectToDB = async () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
 })();
+
 
 
