@@ -113,7 +113,7 @@ const connectToDB = async () => {
       // Generate custom URL
       const customURL = HEROKU_APP_NAME
         ? `https://${HEROKU_APP_NAME}.herokuapp.com/${collectionName}`
-        : `http://localhost:${PORT}/${collectionName}`;
+        : `http://supplydb:${PORT}/${collectionName}`;
 
       res.render('signupResponse', { companyName, customURL });
     } catch (error) {
@@ -148,7 +148,7 @@ const connectToDB = async () => {
 
       const resetURL = HEROKU_APP_NAME
         ? `https://${HEROKU_APP_NAME}.herokuapp.com/reset-password/${resetToken}`
-        : `http://localhost:${PORT}/reset-password/${resetToken}`;
+        : `http://supplydb:${PORT}/reset-password/${resetToken}`;
 
       const transporter = nodemailer.createTransport({
         service: 'gmail',
