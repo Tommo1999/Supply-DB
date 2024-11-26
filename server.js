@@ -6,7 +6,6 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
 const path = require('path');
-const rateLimit = require('express-rate-limit'); // Rate limiting
 
 const app = express();
 
@@ -39,14 +38,6 @@ if (HEROKU_APP_NAME) {
     next();
   });
 }
-
-// Rate Limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per window
-  message: 'Too many requests from this IP, please try again later.',
-});
-app.use(limiter);
 
 // MongoDB Connection with Retry Logic
 const connectToDB = async () => {
@@ -184,6 +175,4 @@ const connectToDB = async () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
 })();
-
-
 
