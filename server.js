@@ -64,7 +64,7 @@ const connectToDB = async () => {
 (async () => {
   console.log(`PORT environment variable: ${PORT}`); // Log the value of PORT
   console.log('Starting server...'); // Indicate server startup process
-  
+
   const db = await connectToDB();
   const usersCollection = db.collection('users');
 
@@ -83,7 +83,6 @@ const connectToDB = async () => {
   app.post('/signup', async (req, res) => {
     const { name, email, companyName, password } = req.body;
 
-    // Validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email || !emailRegex.test(email)) {
       return res.status(400).send('Invalid email address.');
@@ -96,9 +95,6 @@ const connectToDB = async () => {
     const collectionName = cleanCompanyName.slice(0, 24);
 
     try {
-      console.log('Creating collection:', collectionName);
-
-      // Check if collection exists
       const collections = await db.listCollections().toArray();
       const collectionExists = collections.some((col) => col.name === collectionName);
 
@@ -106,14 +102,12 @@ const connectToDB = async () => {
         await db.createCollection(collectionName);
       }
 
-      // Hash password and save user
       const hashedPassword = await bcrypt.hash(password, 10);
       await usersCollection.insertOne({ name, email, companyName, password: hashedPassword });
 
-    // Generate custom URL
-const customURL = HEROKU_APP_NAME
-  ? `https://${HEROKU_APP_NAME}.herokuapp.com/${collectionName}`
-  : `http://www.supplierdb.info/${collectionName}`;
+      const customURL = HEROKU_APP_NAME
+        ? `https://${HEROKU_APP_NAME}.herokuapp.com/${collectionName}`
+        : `http://www.supplierdb.info/${collectionName}`;
 
       res.render('signupResponse', { companyName, customURL });
     } catch (error) {
@@ -148,7 +142,7 @@ const customURL = HEROKU_APP_NAME
 
       const resetURL = HEROKU_APP_NAME
         ? `https://${HEROKU_APP_NAME}.herokuapp.com/reset-password/${resetToken}`
-        : `http://supplydb:${PORT}/reset-password/${resetToken}`;
+        : `http://localhost:${PORT}/reset-password/${resetToken}`;
 
       const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -175,10 +169,70 @@ const customURL = HEROKU_APP_NAME
     }
   });
 
+  // Download Customer Data as Excel
+  app.get('/download/customers', async (req, res) => {
+    try {
+      const customers = await usersCollection.find({}, { projection: { name: 1, email: 1, companyName: 1, companyPhone: 1, mobilePhone: 1, coreServices: 1, website: 1, postcode: 1 } }).toArray();
+
+      const workbook = new ExcelJS.Workbook();
+      const sheet = workbook.addWorksheet('Customers');
+
+      sheet.columns = [
+        { header: 'Name', key: 'name', width: 20 },
+        { header: 'Email', key: 'email', width: 30 },
+        { header: 'Company Name', key: 'companyName', width: 25 },
+        { header: 'Company Phone', key: 'companyPhone', width: 20 },
+        { header: 'Mobile Phone', key: 'mobilePhone', width: 20 },
+        { header: 'Core Services', key: 'coreServices', width: 30 },
+        { header: 'Website', key: 'website', width: 25 },
+        { header: 'Postcode', key: 'postcode', width: 15 },
+      ];
+
+      sheet.addRows(customers);
+
+      res.setHeader(
+        'Content-Disposition',
+        'attachment; filename="customers.xlsx"'
+      );
+      await workbook.xlsx.write(res);
+      res.end();
+    } catch (error) {
+      console.error('Error exporting customers:', error);
+      res.status(500).send('Error exporting customers.');
+    }
+  });
+
+  // Download Supplier Data as Excel
+  app.get('/download/suppliers', async (req, res) => {
+    try {
+      const suppliers = await db.listCollections().toArray();
+
+      const workbook = new ExcelJS.Workbook();
+      const sheet = workbook.addWorksheet('Suppliers');
+
+      sheet.columns = [
+        { header: 'Supplier Collection', key: 'name', width: 30 },
+      ];
+
+      suppliers.forEach((supplier) => {
+        sheet.addRow({ name: supplier.name });
+      });
+
+      res.setHeader(
+        'Content-Disposition',
+        'attachment; filename="suppliers.xlsx"'
+      );
+      await workbook.xlsx.write(res);
+      res.end();
+    } catch (error) {
+      console.error('Error exporting suppliers:', error);
+      res.status(500).send('Error exporting suppliers.');
+    }
+  });
+
   app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
     console.log(`Test server connectivity: curl http://localhost:${PORT}/health`);
   });
 })();
-
 
