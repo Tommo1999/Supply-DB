@@ -113,7 +113,7 @@ const connectToDB = async () => {
     // Generate custom URL
 const customURL = HEROKU_APP_NAME
   ? `https://${HEROKU_APP_NAME}.herokuapp.com/${collectionName}`
-  : `http://supplydb/${collectionName}`;
+  : `http://www.supplierdb.info/${collectionName}`;
 
       res.render('signupResponse', { companyName, customURL });
     } catch (error) {
