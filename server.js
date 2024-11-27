@@ -76,6 +76,11 @@ const connectToDB = async () => {
   app.get('/signup', (req, res) => res.sendFile(path.join(__dirname, 'signup.html')));
   app.get('/forgot-password', (req, res) => res.sendFile(path.join(__dirname, 'forgot-password.html')));
 
+  // New Route for Supplier Form
+  app.get('/supplier_form', (req, res) => {
+    res.render('supplier_form'); // Assuming supplier_form.ejs exists in the views folder
+  });
+
   // Health Check Route
   app.get('/health', (req, res) => res.send('Server is running and healthy!'));
 
@@ -235,4 +240,5 @@ const connectToDB = async () => {
     console.log(`Test server connectivity: curl http://localhost:${PORT}/health`);
   });
 })();
+
 
