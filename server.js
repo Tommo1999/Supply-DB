@@ -18,7 +18,7 @@ app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 
 // MongoDB Connection URL (using environmental variable)
-const uri = process.env.MONGODB_URI;  // Fetch URI from environment variable
+const uri = process.env.MONGO_URI;  // Fetch URI from environment variable
 
 // Connect to MongoDB
 MongoClient.connect(uri)
@@ -50,7 +50,7 @@ MongoClient.connect(uri)
         await db.createCollection(collectionName);
 
         // Respond with a message containing the custom URL
-        res.send(`Account created for ${companyName}. Access your supplier form at: http://localhost:${process.env.PORT || 3000}/${collectionName}`);
+        res.send(`Account created for ${companyName}. Access your supplier form at: http://www.supplierdb.info:${process.env.PORT || 3000}/${collectionName}`);
       } catch (error) {
         console.error('Error creating company collection:', error);
         res.status(500).send('Error creating your company account. Please try again.');
