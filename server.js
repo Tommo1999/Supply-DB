@@ -84,42 +84,42 @@ const connectToDB = async () => {
   // Health Check Route
   app.get('/health', (req, res) => res.send('Server is running and healthy!'));
 
-  // Signup Route
-  app.post('/signup', async (req, res) => {
-    const { name, email, companyName, password } = req.body;
+ // Signup Route
+app.post('/signup', async (req, res) => {
+  const { name, email, companyName, password } = req.body;
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email || !emailRegex.test(email)) {
-      return res.status(400).send('Invalid email address.');
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email || !emailRegex.test(email)) {
+    return res.status(400).send('Invalid email address.');
+  }
+  if (!password || password.length < 8) {
+    return res.status(400).send('Password must be at least 8 characters long.');
+  }
+
+  const cleanCompanyName = companyName.toLowerCase().replace(/\d+/g, '').trim();
+  const collectionName = cleanCompanyName.slice(0, 24);
+
+  try {
+    const collections = await db.listCollections().toArray();
+    const collectionExists = collections.some((col) => col.name === collectionName);
+
+    if (!collectionExists) {
+      await db.createCollection(collectionName);
     }
-    if (!password || password.length < 8) {
-      return res.status(400).send('Password must be at least 8 characters long.');
-    }
 
-    const cleanCompanyName = companyName.toLowerCase().replace(/\d+/g, '').trim();
-    const collectionName = cleanCompanyName.slice(0, 24);
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await usersCollection.insertOne({ name, email, companyName, password: hashedPassword });
 
-    try {
-      const collections = await db.listCollections().toArray();
-      const collectionExists = collections.some((col) => col.name === collectionName);
+    const customURL = HEROKU_APP_NAME
+      ? `https://${HEROKU_APP_NAME}.herokuapp.com/${collectionName}`
+      : `http://www.supplierdb.info/${collectionName}`;  // This URL is now dynamically generated
 
-      if (!collectionExists) {
-        await db.createCollection(collectionName);
-      }
-
-      const hashedPassword = await bcrypt.hash(password, 10);
-      await usersCollection.insertOne({ name, email, companyName, password: hashedPassword });
-
-      const customURL = HEROKU_APP_NAME
-        ? `https://${HEROKU_APP_NAME}.herokuapp.com/${collectionName}`
-        : `http://www.supplierdb.info/${collectionName}`;
-
-      res.render('signupResponse', { companyName, customURL });
-    } catch (error) {
-      console.error('Signup error:', error);
-      res.status(500).send('Error creating account.');
-    }
-  });
+    res.render('signupResponse', { companyName, customURL }); // Render signup response with the correct URL
+  } catch (error) {
+    console.error('Signup error:', error);
+    res.status(500).send('Error creating account.');
+  }
+});
 
   // Forgot Password Route
   app.post('/forgot-password', async (req, res) => {
