@@ -49,8 +49,11 @@ MongoClient.connect(uri)
         // Create a new collection for the company within the existing 'supplier_db'
         await db.createCollection(collectionName);
 
-        // Respond with a message containing the custom URL
-        res.send(`Account created for ${companyName}. Access your supplier form at: http://www.supplierdb.info:${process.env.PORT || 3000}/${collectionName}`);
+        // Render signup response
+        res.render('signupResponse', { 
+          title: 'Signup Successful',
+          message: `Account created for ${companyName}. You can access your supplier form at: http://www.supplierdb.info:${process.env.PORT || 3000}/${collectionName}` 
+        });
       } catch (error) {
         console.error('Error creating company collection:', error);
         res.status(500).send('Error creating your company account. Please try again.');
@@ -63,11 +66,6 @@ MongoClient.connect(uri)
       res.render('supplier_form', { companyName }); // Render an EJS template with the company name
     });
 
-    // Serve the login page
-    app.get('/login', (req, res) => {
-      res.sendFile(__dirname + '/login.html');
-    });
-
     // Handle login
     app.post('/login', async (req, res) => {
       const { companyName, password } = req.body;
@@ -78,7 +76,11 @@ MongoClient.connect(uri)
 
         // Check if user exists and password matches
         if (user && user.password === password) {
-          res.send(`Welcome, ${companyName}!`);
+          // Render login response
+          res.render('loginResponse', { 
+            title: 'Login Successful', 
+            message: `Welcome, ${companyName}! You have successfully logged in.` 
+          });
         } else {
           res.status(401).send('Invalid credentials. Please try again.');
         }
@@ -106,7 +108,11 @@ MongoClient.connect(uri)
       suppliersCollection.insertOne(supplierData)
         .then(result => {
           console.log('Supplier data saved to database');
-          res.send('Supplier data submitted successfully');
+          // Render supplier submission response
+          res.render('supplier-submission-form', { 
+            title: 'Submission Successful',
+            message: 'Supplier data submitted successfully!' 
+          });
         })
         .catch(err => {
           console.error('Error inserting data:', err);
