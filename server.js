@@ -37,26 +37,21 @@ MongoClient.connect(uri)
     app.get('/login', (req, res) => res.sendFile(__dirname + '/login.html'));
     app.get('/signup', (req, res) => res.sendFile(__dirname + '/signup.html'));
 
-    // Handle sign-up logic
+    // Render the signupResponse without any variables
     app.post('/signup', async (req, res) => {
-      const { name, email, companyName, password } = req.body;
-      const collectionName = companyName.toLowerCase().replace(/\s+/g, ''); // Generate collection name from company
-
       try {
-        // Insert user information into the 'users' collection
-        await usersCollection.insertOne({ name, email, password, companyName });
+        // Handle signup logic
+        const { name, email, companyName, password } = req.body;
+        const collectionName = companyName.toLowerCase().replace(/\s+/g, '');
 
-        // Create a new collection for the company within the existing 'supplier_db'
+        await usersCollection.insertOne({ name, email, password, companyName });
         await db.createCollection(collectionName);
 
-        // Render signup response
-        res.render('signupResponse', { 
-          title: 'Signup Successful',
-          message: `Account created for ${companyName}. You can access your supplier form at: http://www.supplierdb.info:${process.env.PORT || 3000}/${collectionName}` 
-        });
+        // Redirect to the signup response page
+        res.render('signupResponse'); // No dynamic content passed to this page
       } catch (error) {
-        console.error('Error creating company collection:', error);
-        res.status(500).send('Error creating your company account. Please try again.');
+        console.error('Error during signup:', error);
+        res.status(500).send('An error occurred during signup.');
       }
     });
 
@@ -178,3 +173,4 @@ MongoClient.connect(uri)
   .catch(error => {
     console.error('Failed to connect to database:', error);
   });
+
