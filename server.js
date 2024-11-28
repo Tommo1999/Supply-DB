@@ -56,10 +56,10 @@ MongoClient.connect(uri)
     });
 
     // Serve the supplier form for the company
-    app.get('/:company', (req, res) => {
-      const companyName = req.params.company;
-      res.render('supplier_form', { companyName }); // Render an EJS template with the company name
-    });
+  app.get('/:company', (req, res) => {
+  const companyName = req.params.company; // Extract the company name from the URL parameter
+  res.render('supplier_form', { companyName }); // Pass the company name to the EJS template
+});
 
     // Handle login
     app.post('/login', async (req, res) => {
