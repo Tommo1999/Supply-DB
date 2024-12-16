@@ -74,7 +74,7 @@ MongoClient.connect(MONGO_URI)
        const herokuUrl = 'https://supplydb-7b5704f73b0d.herokuapp.com';
 
         // Respond with the EJS template
-        res.render('signupResponse', { companyName, customPath });
+        res.render('signupResponse', { companyName, customPath, herokuUrl });
       } catch (error) {
         console.error('Error creating company collection:', error);
         res.status(500).send('Error creating your company account. Please try again.');
