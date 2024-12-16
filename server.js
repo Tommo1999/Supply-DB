@@ -70,6 +70,9 @@ MongoClient.connect(MONGO_URI)
         const normalizedCompanyName = collectionName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
         const customPath = `/${normalizedCompanyName}`;
 
+       // Define the Heroku URL
+       const herokuUrl = 'https://supplydb-7b5704f73b0d.herokuapp.com';
+
         // Respond with the EJS template
         res.render('signupResponse', { companyName, customPath });
       } catch (error) {
