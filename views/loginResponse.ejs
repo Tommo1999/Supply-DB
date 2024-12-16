@@ -70,10 +70,11 @@
     </header>
 
     <div class="container">
-        <h1>Welcome back, <%= userType === 'supplier' ? 'Supplier' : 'Customer' %> <%= companyName %>!</h1>
+        <h1>Welcome back, <%= companyName %>!</h1>
         <p>You have successfully logged in.</p>
-        <p>You can now access your <%= userType %> database using the link below:</p>
-        <a class="custom-link" href="<%= downloadLink %>">Download <%= userType.charAt(0).toUpperCase() + userType.slice(1) %> Database</a>
+        <p>Click here to access your supplier database</p>
+        <!-- Corrected the <a> tag -->
+        <a class="custom-link" href="/suppliers/<%= companyName %>">Supplier Database</a>
     </div>
 
     <footer>
@@ -81,3 +82,4 @@
     </footer>
 </body>
 </html>
+

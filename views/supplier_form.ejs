@@ -6,123 +6,151 @@
     <title>Supplier Form for <%= companyName %></title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
             margin: 0;
             padding: 0;
+            text-align: center;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+        }
+        .logo {
+            font-size: 2em;
+            font-weight: bold;
         }
         .container {
-            width: 100%;
+            margin-top: 50px;
             max-width: 600px;
             margin: 20px auto;
             background: #fff;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
+            padding-left: 40px;
+            padding-right: 40px;
         }
         h1 {
-            text-align: center;
             color: #333;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+            font-size: 2.5em;
         }
         label {
-            font-weight: bold;
-            color: #555;
+            display: block;
+            margin: 10px 0 5px;
+            text-align: left;
         }
-        input, button {
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="url"],
+        textarea {
+            width: 100%;
             padding: 10px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
+            margin: 5px 0 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: block;
+            font-size: 1em;
+            box-sizing: border-box; /* Ensures padding is included in the width */
         }
-        input:focus {
-            outline: none;
-            border-color: #00aaff;
+        textarea {
+            height: 50px; /* Same height as other textboxes */
+            resize: none; /* Prevent resizing */
         }
         button {
-            background-color: #00aaff;
+            background-color: #4CAF50;
             color: white;
             border: none;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border-radius: 5px;
             cursor: pointer;
         }
         button:hover {
-            background-color: #008ecc;
+            background-color: #45a049;
+        }
+        .hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+            text-align: left;
+        }
+        footer {
+            margin-top: 50px;
+            color: #888;
         }
         .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-        .optional {
-            color: #888;
-            font-size: 14px;
-        }
-        .small-text {
-            font-size: 12px;
-            color: #777;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
 
+<header>
+    <div class="logo">SupplierDB</div>
+</header>
+
 <div class="container">
     <h1>Supplier Form for <%= companyName %></h1>
     
+    <!-- Supplier form -->
     <form action="/submit/<%= companyName %>" method="POST">
+        
         <div class="form-group">
-            <label for="supplierID">Supplier ID:</label>
-            <input type="text" id="supplierID" name="supplierID" placeholder="Enter Supplier ID" required>
+            <label for="supplierID">Supplier ID</label>
+            <input type="text" id="supplierID" name="supplierID" required>
         </div>
 
         <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" placeholder="Enter Supplier Name" required>
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
         </div>
 
         <div class="form-group">
-            <label for="company">Company:</label>
-            <input type="text" id="company" name="company" placeholder="Enter Company Name" required>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required placeholder="e.g. john.doe@example.com">
+            <p class="hint">Include the "@" symbol. Example: john.doe@example.com</p>
         </div>
 
         <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" placeholder="Enter Email Address" required>
-            <p class="small-text">Example: supplier@company.com</p>
+            <label for="company_phone_number">Company Phone Number</label>
+            <input type="tel" id="company_phone_number" name="company_phone_number" required>
         </div>
 
         <div class="form-group">
-            <label for="company_phone_number">Company Phone:</label>
-            <input type="text" id="company_phone_number" name="company_phone_number" placeholder="Enter Company Phone Number">
+            <label for="mobile_phone_number">Mobile Phone Number (Optional)</label>
+            <input type="tel" id="mobile_phone_number" name="mobile_phone_number">
         </div>
 
         <div class="form-group">
-            <label for="mobile_phone_number">Mobile Phone: <span class="optional">(Optional)</span></label>
-            <input type="text" id="mobile_phone_number" name="mobile_phone_number" placeholder="Enter Mobile Phone Number">
+            <label for="core_business">Core Business</label>
+            <textarea id="core_business" name="core_business" required></textarea>
         </div>
 
         <div class="form-group">
-            <label for="core_business">Core Business:</label>
-            <input type="text" id="core_business" name="core_business" placeholder="Enter Core Business" required>
+            <label for="website">Website (Optional)</label>
+            <input type="url" id="website" name="website" placeholder="e.g. www.example.com">
+            <p class="hint">Include "www.". Example: www.example.com</p>
         </div>
 
         <div class="form-group">
-            <label for="website">Website: <span class="optional">(Optional)</span></label>
-            <input type="text" id="website" name="website" placeholder="www.example.com">
-            <p class="small-text">Include www.//</p>
+            <label for="postcode">Postal Code (Optional)</label>
+            <input type="text" id="postcode" name="postcode">
         </div>
 
-        <div class="form-group">
-            <label for="postcode">Postcode: <span class="optional">(Optional)</span></label>
-            <input type="text" id="postcode" name="postcode" placeholder="Enter Postcode">
-        </div>
-
-        <button type="submit">Submit</button>
+        <button type="submit">Submit Supplier</button>
     </form>
 </div>
 
+<footer>
+    <p>&copy; 2024 SupplierDB. All rights reserved.</p>
+</footer>
+
 </body>
 </html>
+
+
+
 
