@@ -1,12 +1,7 @@
-// Load environment variables from .env file
-require('dotenv').config();
-
-const express = require('express'); 
+const express = require('express');
 const bodyParser = require('body-parser');
 const { MongoClient } = require('mongodb');
-const ExcelJS = require('exceljs');  // Import the ExcelJS module
-const crypto = require('crypto');
-const nodemailer = require('nodemailer');
+const ExcelJS = require('exceljs');
 const bcrypt = require('bcryptjs');
 const path = require('path');
 
@@ -14,163 +9,229 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Set EJS as the templating engine
-app.set('view engine', 'ejs'); 
-app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
-// MongoDB Connection URL (using environmental variable)
-const uri = process.env.MONGO_URI;  // Fetch URI from environment variable
+// MongoDB Connection URL (replace with your actual MongoDB URI)
+const uri = 'mongodb+srv://webform_user:WebForm@project1.poswy.mongodb.net/supplydb?retryWrites=true&w=majority';
+const PORT = 3000; // Server port
 
 // Connect to MongoDB
 MongoClient.connect(uri)
   .then(client => {
     console.log('Connected to Database');
     const db = client.db('supplier_db');
-    const suppliersCollection = db.collection('suppliers'); // Suppliers collection
-    const usersCollection = db.collection('users'); // Users collection
+    const suppliersCollection = db.collection('suppliers');
+    const customer_usersCollection = db.collection('customer_users');
 
     // Serve the main index page
     app.get('/', (req, res) => {
-      res.sendFile(__dirname + '/index.html');
+      res.sendFile(path.join(__dirname, 'index.html'));
     });
 
-    // Serve the login and signup pages
-    app.get('/login', (req, res) => res.sendFile(__dirname + '/login.html'));
-    app.get('/signup', (req, res) => res.sendFile(__dirname + '/signup.html'));
-
-    // Render the signupResponse without any variables
-    app.post('/signup', async (req, res) => {
-      try {
-        // Handle signup logic
-        const { name, email, companyName, password } = req.body;
-        const collectionName = companyName.toLowerCase().replace(/\s+/g, '');
-
-        await usersCollection.insertOne({ name, email, password, companyName });
-        await db.createCollection(collectionName);
-
-        // Redirect to the signup response page
-        res.render('signupResponse'); // No dynamic content passed to this page
-      } catch (error) {
-        console.error('Error during signup:', error);
-        res.status(500).send('An error occurred during signup.');
-      }
+    // Serve login-selection page
+    app.get('/login', (req, res) => {
+      res.sendFile(path.join(__dirname, 'login-selection.html'));
     });
 
-    // Serve the supplier form for the company
-  app.get('/:company', (req, res) => {
-  const companyName = req.params.company; // Extract the company name from the URL parameter
-  res.render('supplier_form', { companyName }); // Pass the company name to the EJS template
+    // Serve login forms for customer and supplier
+    app.get('/customer/login', (req, res) => {
+      res.sendFile(path.join(__dirname, 'customer-login.html'));
+    });
+
+    app.get('/supplier/login', (req, res) => {
+      res.sendFile(path.join(__dirname, 'supplier-login.html'));
+    });
+
+    // Serve signup page
+    app.get('/signup', (req, res) => {
+      res.sendFile(path.join(__dirname, 'signup.html'));
+    });
+
+app.post('/signup', async (req, res) => {
+  try {
+    const { name, email, companyName, password } = req.body;
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Normalize collectionName for consistency
+    const collectionName = companyName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
+    // Insert user information into the 'customer users' collection
+    await customer_usersCollection.insertOne({ name, email, password: hashedPassword, companyName });
+
+    // Create a new collection for the company within the 'supplier_db'
+    await db.createCollection(collectionName);
+
+  // Generate the custom URL
+const normalizedCompanyName = collectionName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+const customUrl = `http://localhost:${PORT}/${normalizedCompanyName}`;
+
+// Respond with the EJS template
+res.render('signupResponse', { companyName, customUrl });
+  } catch (error) {
+    console.error('Error creating company collection:', error);
+    res.status(500).send('Error creating your company account. Please try again.');
+  }
+});
+   // serve the supplier form 
+   app.get('/:company', (req, res) => {
+  try {
+    const companyName = req.params.company;
+
+    // Normalize the company name to match the collectionName logic
+    const normalizedCompanyName = companyName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
+    res.render('supplier_form', { companyName: normalizedCompanyName });
+  } catch (error) {
+    console.error('Error serving supplier form:', error);
+    res.status(500).send('Error loading supplier form. Please try again.');
+  }
+});
+ 
+//handle login section 
+  app.post('/customer/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // Check if the user is a customer in the database
+    const customer = await customer_usersCollection.findOne({ email: email.toLowerCase() });
+
+    if (customer && await bcrypt.compare(password, customer.password)) {
+      res.render('loginResponse', {
+        userType: 'customer',
+        companyName: customer.companyName,
+        // Directing the user to the supplier list for their company
+        downloadLink: `/suppliers/${customer.companyName}` // Updated link for suppliers page
+      });
+    } else {
+      res.status(401).send('Invalid email or password. Please try again.');
+    }
+  } catch (error) {
+    console.error('Error logging in customer:', error);
+    res.status(500).send('An error occurred during login. Please try again.');
+  }
 });
 
-    // Handle login
-    app.post('/login', async (req, res) => {
-      const { companyName, password } = req.body;
+// Route to show suppliers for a specific company
+app.get('/suppliers/:companyName', async (req, res) => {
+  const { companyName } = req.params;
 
-      try {
-        // Fetch the user from the database
-        const user = await usersCollection.findOne({ companyName: companyName });
+  try {
+    const collectionName = companyName.replace(/\s+/g, '-').toLowerCase();
+    const collection = db.collection(collectionName);
 
-        // Check if user exists and password matches
-        if (user && user.password === password) {
-          // Render login response
-          res.render('loginResponse', { 
-            title: 'Login Successful', 
-            message: `Welcome, ${companyName}! You have successfully logged in.` 
-          });
-        } else {
-          res.status(401).send('Invalid credentials. Please try again.');
-        }
-      } catch (error) {
-        console.error('Error logging in:', error);
-        res.status(500).send('An error occurred during login. Please try again.');
+    let suppliers = await collection.find().toArray();
+
+    // Deduplicate suppliers
+    const uniqueSuppliers = Array.from(
+      new Map(suppliers.map(s => [s.supplierID, s])).values()
+    );
+
+    res.render('suppliers', { suppliers: uniqueSuppliers });
+  } catch (error) {
+    console.error('Error fetching suppliers:', error);
+    res.status(500).send('An error occurred while fetching the suppliers.');
+  }
+});
+
+// Handle form submission for a specific supplier
+app.post('/submit/:company', async (req, res) => {
+  try {
+    const companyName = req.params.company; // Get company name from the URL
+
+    // Normalize the company name to match the collectionName logic used in `/signup`
+    const collectionName = companyName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
+    // Fetch the specific collection for the company
+    const targetCollection = db.collection(collectionName);
+
+    // Create the supplier data object
+    const supplierData = {
+      supplierID: req.body.supplierID,
+      name: req.body.name,
+      company: companyName,
+      email: req.body.email,
+      company_phone_number: req.body.company_phone_number,
+      mobile_phone_number: req.body.mobile_phone_number || null, // Optional
+      core_business: req.body.core_business,
+      website: req.body.website || null, // Optional
+      postcode: req.body.postcode || null // Optional
+    };
+
+    // Insert the supplier data into the specific company collection
+    await targetCollection.insertOne(supplierData);
+
+    console.log('Supplier data saved to database in collection:', collectionName);
+    res.render('supplier-submission-confirmation', { companyName });
+  } catch (err) {
+    console.error('Error inserting data:', err);
+    res.status(500).send('Failed to add supplier');
+  }
+});
+
+  // Add the Excel download route
+app.get('/download/:companyName', async (req, res) => {
+  const { companyName } = req.params;
+
+  try {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Suppliers');
+
+    // Add headers
+    worksheet.columns = [
+      { header: 'Supplier ID', key: 'supplierID', width: 15 },
+      { header: 'Name', key: 'name', width: 20 },
+      { header: 'Company', key: 'company', width: 20 },
+      { header: 'Email', key: 'email', width: 25 },
+      { header: 'Phone 1', key: 'company_phone_number', width: 15 },
+      { header: 'Phone 2', key: 'mobile_phone_number', width: 15 },
+      { header: 'Products', key: 'core_business', width: 20 },
+      { header: 'Website', key: 'website', width: 25 },
+      { header: 'Postal Code', key: 'postcode', width: 10 },
+    ];
+
+    // Dynamically get the collection for the company
+    const collectionName = `suppliers_${companyName.replace(/\s+/g, '_').toLowerCase()}`;
+    const collection = db.collection(collectionName);
+
+// Deduplicate rows
+    const seen = {};
+    suppliers.forEach(supplier => {
+      const key = `${supplier.supplierID}-${supplier.email}`; // Unique key
+      if (!seen[key]) {
+        worksheet.addRow(supplier); // Add only if not seen
+        seen[key] = true;
       }
     });
 
-    // Handle form submission for suppliers
-    app.post('/submit', (req, res) => {
-      const supplierData = {
-        supplierID: req.body.supplierID,
-        name: req.body.name,
-        company: req.body.company,
-        email: req.body.email,
-        company_phone_number: req.body.company_phone_number,
-        mobile_phone_number: req.body.mobile_phone_number || null, // Optional field
-        core_business: req.body.core_business,
-        website: req.body.website || null, // Optional field
-        postcode: req.body.postcode || null // Optional field
-      };
+    // Fetch suppliers from the company's collection
+    const suppliers = await collection.find().toArray();
 
-      // Insert supplier data into MongoDB
-      suppliersCollection.insertOne(supplierData)
-        .then(result => {
-          console.log('Supplier data saved to database');
-          // Render supplier submission response
-          res.render('supplier-submission-form', { 
-            title: 'Submission Successful',
-            message: 'Supplier data submitted successfully!' 
-          });
-        })
-        .catch(err => {
-          console.error('Error inserting data:', err);
-          res.status(500).send('Failed to add supplier');
-        });
+    // Add rows with data
+    suppliers.forEach(supplier => {
+      worksheet.addRow(supplier);
     });
 
-    // Route to display all suppliers
-    app.get('/suppliers', (req, res) => {
-      suppliersCollection.find().toArray()
-        .then(results => {
-          res.render('suppliers', { suppliers: results });
-        })
-        .catch(error => console.error(error));
-    });
+    // Set response headers
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename=${companyName}_suppliers.xlsx`);
 
-    // Add the Excel download route
-    app.get('/download', async (req, res) => {
-      try {
-        const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet('Suppliers');
-
-        // Add headers
-        worksheet.columns = [
-          { header: 'Supplier ID', key: 'supplierID', width: 15 },
-          { header: 'Name', key: 'name', width: 20 },
-          { header: 'Company', key: 'company', width: 20 },
-          { header: 'Email', key: 'email', width: 25 },
-          { header: 'Phone 1', key: 'company_phone_number', width: 15 },
-          { header: 'Phone 2', key: 'mobile_phone_number', width: 15 },
-          { header: 'Products', key: 'core_business', width: 20 },
-          { header: 'Website', key: 'website', width: 25 },
-          { header: 'Postal Code', key: 'postcode', width: 10 },
-        ];
-
-        // Fetch data from MongoDB
-        const suppliers = await suppliersCollection.find().toArray();
-
-        // Add rows with data
-        suppliers.forEach(supplier => {
-          worksheet.addRow(supplier);
-        });
-
-        // Set response header
-        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.setHeader('Content-Disposition', 'attachment; filename=suppliers.xlsx');
-
-        // Write the Excel file to response
-        await workbook.xlsx.write(res);
-        res.end();
-      } catch (err) {
-        console.error('Error generating Excel:', err);
-        res.status(500).send('Error generating Excel file');
-      }
-    });
-
+    // Write the Excel file to response
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (error) {
+    console.error('Error generating Excel:', error);
+    res.status(500).send('Error generating Excel file');
+  }
+});
     // Start the server
-    app.listen(process.env.PORT || 3000, () => {
-      console.log(`Server running on http://localhost:${process.env.PORT || 3000}`);
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
     });
 
   })
   .catch(error => {
     console.error('Failed to connect to database:', error);
   });
-
