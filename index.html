@@ -17,21 +17,21 @@
         header {
             background-color: #4CAF50;
             color: white;
-            padding: 20px;
+            padding: 10px 20px;
             display: flex;
             align-items: center;
-            justify-content: center;
             position: relative;
         }
 
         .logo {
             font-size: 2em;
             font-weight: bold;
+            margin: 0 auto; /* Center the logo text */
         }
 
         .home-button {
             position: absolute;
-            left: 20px;
+            left: 10px; /* Keep it close to the left edge */
             top: 50%;
             transform: translateY(-50%);
             width: 40px;
@@ -119,6 +119,7 @@
 <body>
 
 <header>
+    <!-- Home Button -->
     <a href="/" class="home-button" title="Go to Home Page">
         <i class="fas fa-home"></i>
     </a>
@@ -137,9 +138,7 @@
 
 <!-- Beta Warning Section -->
 <div class="beta-warning">
-    This website is currently in beta. By using this site, you acknowledge that it is still under development and may contain bugs or incomplete features. 
-    We are continuously working to improve the user experience, but please be aware that your data may be at risk. 
-    We recommend not sharing sensitive or personal information at this time. Your understanding and feedback are greatly appreciated as we work towards a stable release.
+    This website is currently in beta. By using this site, you acknowledge that it is still under development and may contain bugs or incomplete features. We are continuously working to improve the user experience, but please be aware that your data may be at risk. We recommend not sharing sensitive or personal information at this time. Your understanding and feedback are greatly appreciated as we work towards a stable release.
 </div>
 
 <footer>
