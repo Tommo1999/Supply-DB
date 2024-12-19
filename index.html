@@ -21,7 +21,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative; /* Allows positioning the home button in the top-left */
+            position: relative;
         }
 
         .logo {
@@ -30,11 +30,11 @@
         }
 
         .home-button {
-            position: absolute; /* Keeps it in the top-left corner */
-            left: 20px; /* Position from the left */
-            top: 50%; /* Center align vertically with the header */
+            position: absolute;
+            left: 20px;
+            top: 50%;
             transform: translateY(-50%);
-            width: 40px; /* Smaller size for the home button */
+            width: 40px;
             height: 40px;
             background-color: white;
             color: #4CAF50;
@@ -94,8 +94,19 @@
             transform: translateY(-2px);
         }
 
+        .beta-warning {
+            background-color: #ffcc00;
+            color: #333;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 5px;
+            font-size: 1em;
+            line-height: 1.5;
+            text-align: center;
+        }
+
         footer {
-            margin-top: 50px;
+            margin-top: 20px;
             color: #888;
         }
 
@@ -107,11 +118,7 @@
 </head>
 <body>
 
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5571374933432388"
-     crossorigin="anonymous"></script>
-
 <header>
-    <!-- Home Button -->
     <a href="/" class="home-button" title="Go to Home Page">
         <i class="fas fa-home"></i>
     </a>
@@ -126,6 +133,13 @@
         <a href="/signup" class="two-line">Create A<br>Customer Account</a>
         <a href="/login">Log In</a> 
     </div>
+</div>
+
+<!-- Beta Warning Section -->
+<div class="beta-warning">
+    This website is currently in beta. By using this site, you acknowledge that it is still under development and may contain bugs or incomplete features. 
+    We are continuously working to improve the user experience, but please be aware that your data may be at risk. 
+    We recommend not sharing sensitive or personal information at this time. Your understanding and feedback are greatly appreciated as we work towards a stable release.
 </div>
 
 <footer>
