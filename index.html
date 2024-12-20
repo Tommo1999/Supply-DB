@@ -80,19 +80,28 @@
             line-height: 1.2;
         }
 
+        /* Beta Warning Background */
+        .beta-warning {
+            background-color: #ffcc00;
+            color: #333;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 5px;
+            font-size: 1em;
+            line-height: 1.5;
+            text-align: center;
+        }
+
         /* Specific style for LinkedIn link */
         .linkedin-link {
-            display: inline-block;
-            padding: 0; /* No padding */
-            font-size: 1.2em;
-            background: none; /* No background */
-            color: black; /* Black text color */
+            color: blue; /* Standard hyperlink color */
+            font-size: 1em; /* Reduced font size */
             text-decoration: none; /* No underline */
-            cursor: pointer;
         }
 
         .linkedin-link:hover {
             text-decoration: none; /* No underline on hover */
+            color: blue; /* Ensure link stays blue on hover */
         }
     </style>
 </head>
@@ -112,15 +121,15 @@
     </div>
 </div>
 
-<!-- Beta Warning Section -->
-<div>
+<!-- Beta Warning Section with Yellow Background -->
+<div class="beta-warning">
     This website is currently in beta. 
     By using this site, you acknowledge that it is still under development and may contain bugs or incomplete features. 
     We are continuously working to improve the user experience, but please be aware that your data may be at risk. 
     We recommend not sharing sensitive or personal information at this time. Your understanding and feedback are greatly appreciated as we work towards a stable release.
 </div>
 
-<!-- LinkedIn Link (Plain Text) -->
+<!-- LinkedIn Link Under the Statement -->
 <p>If you have any questions or queries, feel free to reach out to me at <a href="https://www.linkedin.com/in/thomas-robertson-400489187/" class="linkedin-link" target="_blank">https://www.linkedin.com/in/thomas-robertson-400489187/</a>.</p>
 
 <footer>
@@ -129,4 +138,5 @@
 
 </body>
 </html>
+
 
