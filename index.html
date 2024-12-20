@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SupplierDB Home</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -21,41 +20,13 @@
             display: flex;
             align-items: center;
             position: relative;
-            height: 60px; /* Ensure consistent height for the header */
+            height: 60px;
         }
 
         .logo {
             font-size: 1.8em;
             font-weight: bold;
-            margin: 0 auto; /* Center the logo text */
-        }
-
-        .home-button {
-            position: absolute;
-            left: 10px; /* Position the button on the left */
-            top: 40%;
-            transform: translateY(-50%); /* Center it vertically */
-            width: 35px; /* Adjust size to fit within the header */
-            height: 35px;
-            background-color: white;
-            color: #4CAF50;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-            font-size: 1em;
-            text-decoration: none;
-        }
-
-        .home-button:hover {
-            background-color: #f1f1f1;
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        /* Hide the home button on the home page */
-        .home-page .home-button {
-            display: none;
+            margin: 0 auto;
         }
 
         .container {
@@ -89,7 +60,6 @@
             margin: 10px 0;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.3s ease;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
             text-decoration: none;
             width: 200px;
             text-align: center;
@@ -98,17 +68,6 @@
         button:hover, a:hover {
             background-color: #45a049;
             transform: translateY(-2px);
-        }
-
-        .beta-warning {
-            background-color: #ffcc00;
-            color: #333;
-            padding: 20px;
-            margin: 20px;
-            border-radius: 5px;
-            font-size: 1em;
-            line-height: 1.5;
-            text-align: center;
         }
 
         footer {
@@ -120,14 +79,26 @@
             display: block;
             line-height: 1.2;
         }
+
+        /* Specific style for LinkedIn link */
+        .linkedin-link {
+            display: inline-block;
+            padding: 0; /* No padding */
+            font-size: 1.2em;
+            background: none; /* No background */
+            color: black; /* Black text color */
+            text-decoration: none; /* No underline */
+            cursor: pointer;
+        }
+
+        .linkedin-link:hover {
+            text-decoration: underline; /* Underline on hover */
+        }
     </style>
 </head>
-<body class="home-page">
+<body>
+
 <header>
-    <!-- Home Button -->
-    <a href="/" class="home-button" title="Go to Home Page">
-        <i class="fas fa-home"></i>
-    </a>
     <div class="logo">SupplierDB</div>
 </header>
 
@@ -142,7 +113,7 @@
 </div>
 
 <!-- Beta Warning Section -->
-<div class="beta-warning">
+<div>
     This website is currently in beta. 
     By using this site, you acknowledge that it is still under development and may contain bugs or incomplete features. 
     We are continuously working to improve the user experience, but please be aware that your data may be at risk. 
@@ -150,7 +121,7 @@
 </div>
 
 <!-- LinkedIn Link (Plain Text) -->
-<p>If you have any questions or queries, feel free to reach out to me on <a href="https://www.linkedin.com/in/thomas-robertson-400489187/" target="_blank">LinkedIn</a>.</p>
+<p>If you have any questions or queries, feel free to reach out to me on <a href="https://www.linkedin.com/in/thomas-robertson-400489187/" class="linkedin-link" target="_blank">LinkedIn</a>.</p>
 
 <footer>
     <p>&copy; 2024 SupplierDB. All rights reserved.</p>
@@ -158,3 +129,4 @@
 
 </body>
 </html>
+
