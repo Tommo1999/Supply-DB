@@ -16,12 +16,41 @@
         header {
             background-color: #4CAF50;
             color: white;
-            padding: 20px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            height: 60px; /* Consistent header height */
         }
 
         .logo {
-            font-size: 2em;
+            font-size: 1.8em;
             font-weight: bold;
+            margin: 0 auto; /* Center the logo */
+        }
+
+        /* Home button styling */
+        .home-button {
+            position: absolute;
+            left: 10px; /* Position the button on the left */
+            top: 50%;
+            transform: translateY(-50%); /* Center vertically */
+            width: 35px; /* Adjust size */
+            height: 35px;
+            background-color: white;
+            color: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 1em;
+            text-decoration: none;
+        }
+
+        .home-button:hover {
+            background-color: #f1f1f1;
+            transform: translateY(-50%) scale(1.1);
         }
 
         .container {
@@ -38,8 +67,6 @@
             color: #555;
         }
 
-  
-
         footer {
             margin-top: 50px;
             color: #888;
@@ -55,20 +82,23 @@
             margin-top: 20px;
             display: inline-block;
         }
-
     </style>
 </head>
 <body>
     <header>
+        <!-- Home Page Button -->
+        <a href="/" class="home-button" title="Go to Home Page">
+            <i class="fas fa-home"></i>
+        </a>
         <div class="logo">SupplierDB</div>
     </header>
 
     <div class="container">
         <h1>Welcome!</h1>
         <p>Thank you for signing up. Your company has been successfully registered.</p>
-        <p> You will recieve an email with your custom url link to share with your suppliers.</p> 
+        <p>You will receive an email with your custom URL link to share with your suppliers.</p> 
         <p>Or share this link with your suppliers:</p>
-<pre class="copyable-link"><%= herokuUrl + customPath %></pre> <!-- Display the custom URL here -->
+        <pre class="copyable-link"><%= herokuUrl + customPath %></pre> <!-- Display the custom URL here -->
     </div>
 
     <footer>
@@ -76,5 +106,3 @@
     </footer>
 </body>
 </html>
-
-

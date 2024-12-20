@@ -3,101 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submission Confirmation</title>
+    <title>Supplier List</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f0f0f0;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
+            text-align: center;
         }
 
         header {
             background-color: #4CAF50;
             color: white;
-            padding: 20px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            height: 60px; /* Consistent header height */
         }
 
         .logo {
-            font-size: 2em;
+            font-size: 1.8em;
             font-weight: bold;
+            margin: 0 auto; /* Center the logo */
         }
 
-        .container {
-            margin-top: 50px;
+        /* Home button styling */
+        .home-button {
+            position: absolute;
+            left: 10px; /* Position the button on the left */
+            top: 50%;
+            transform: translateY(-50%); /* Center vertically */
+            width: 35px; /* Adjust size */
+            height: 35px;
+            background-color: white;
+            color: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 1em;
+            text-decoration: none;
+        }
+
+        .home-button:hover {
+            background-color: #f1f1f1;
+            transform: translateY(-50%) scale(1.1);
         }
 
         h1 {
-            font-size: 2.5em;
-            color: #333; /* Changed to black */
-        }
-
-        p {
-            margin-bottom: 40px;
-            font-size: 1.2em;
-        }
-
-        .button-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             margin-top: 20px;
+            color: #333;
         }
 
-        a {
-            display: inline-block;
-            padding: 15px 20px;
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            text-align: left;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        button {
+            padding: 10px 20px;
             font-size: 1.2em;
             background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 8px;
-            margin: 10px 0;
+            border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.3s ease;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            text-decoration: none;
-            width: 200px;
-            text-align: center;
         }
 
-        a:hover {
+        button:hover {
             background-color: #45a049;
             transform: translateY(-2px);
-            box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2);
         }
 
         footer {
-            margin-top: 50px;
+            margin-top: 20px;
             color: #888;
         }
     </style>
 </head>
 <body>
-
     <header>
+        <!-- Home Page Button -->
+        <a href="/" class="home-button" title="Go to Home Page">
+            <i class="fas fa-home"></i>
+        </a>
         <div class="logo">SupplierDB</div>
     </header>
 
-    <div class="container">
-        <h1>Submission Confirmed</h1>
-        <p>Your submission for <strong><%= companyName %></strong> has been successfully recorded.</p>
+    <h1>Supplier List</h1>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Supplier ID</th>
+                <th>Name</th>
+                <th>Company</th>
+                <th>Email</th>
+                <th>Company Phone Number</th>
+                <th>Mobile Phone Number</th>
+                <th>Core Business</th>
+                <th>Website</th>
+                <th>Postal Code</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% suppliers.forEach(supplier => { %>
+            <tr>
+                <td><%= supplier.supplierID %></td>
+                <td><%= supplier.name %></td>
+                <td><%= supplier.company %></td>
+                <td><%= supplier.email %></td>
+                <td><%= supplier.company_phone_number %></td>
+                <td><%= supplier.mobile_phone_number %></td>
+                <td><%= supplier.core_business %></td>
+                <td><%= supplier.website %></td>
+                <td><%= supplier.postcode %></td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
 
-        <div class="button-container">
-            <a href="/">Return to Home</a>
-        </div>
-    </div>
+    <!-- Add the Download button -->
+    <br><br>
+    <a href="/download">
+        <button type="button">Download Excel File</button>
+    </a>
 
     <footer>
         <p>&copy; 2024 SupplierDB. All rights reserved.</p>
     </footer>
-
 </body>
 </html>
-
-
-
-
-
-

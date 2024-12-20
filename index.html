@@ -53,6 +53,11 @@
             transform: translateY(-50%) scale(1.1);
         }
 
+        /* Hide the home button on the home page */
+        .home-page .home-button {
+            display: none;
+        }
+
         .container {
             margin-top: 50px;
         }
@@ -115,10 +120,20 @@
             display: block;
             line-height: 1.2;
         }
+
+        /* LinkedIn link style */
+        .linkedin-link {
+            font-size: 1em;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .linkedin-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
-<body>
-
+<body class="home-page">
 <header>
     <!-- Home Button -->
     <a href="/" class="home-button" title="Go to Home Page">
@@ -139,8 +154,19 @@
 
 <!-- Beta Warning Section -->
 <div class="beta-warning">
-    This website is currently in beta. By using this site, you acknowledge that it is still under development and may contain bugs or incomplete features. We are continuously working to improve the user experience, but please be aware that your data may be at risk. We recommend not sharing sensitive or personal information at this time. Your understanding and feedback are greatly appreciated as we work towards a stable release.
+    This website is currently in beta. 
+    By using this site, you acknowledge that it is still under development and may contain bugs or incomplete features. 
+    We are continuously working to improve the user experience, but please be aware that your data may be at risk. 
+    We recommend not sharing sensitive or personal information at this time. Your understanding and feedback are greatly appreciated as we work towards a stable release.
 </div>
+
+<!-- LinkedIn Contact Text -->
+<p>
+    If you have any questions or queries, contact me at 
+    <a href="https://www.linkedin.com/in/thomas-robertson-400489187/" target="_blank" class="linkedin-link">
+        LinkedIn
+    </a>.
+</p>
 
 <footer>
     <p>&copy; 2024 SupplierDB. All rights reserved.</p>

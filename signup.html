@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* Basic styling */
         body {
@@ -18,12 +19,41 @@
         header {
             background-color: #4CAF50;
             color: white;
-            padding: 20px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            height: 60px; /* Consistent height for header */
         }
 
         .logo {
-            font-size: 2em;
+            font-size: 1.8em;
             font-weight: bold;
+            margin: 0 auto; /* Center the logo */
+        }
+
+        /* Home button styling */
+        .home-button {
+            position: absolute;
+            left: 10px; /* Position the button on the left */
+            top: 50%;
+            transform: translateY(-50%); /* Center vertically */
+            width: 35px; /* Adjust size */
+            height: 35px;
+            background-color: white;
+            color: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 1em;
+            text-decoration: none;
+        }
+
+        .home-button:hover {
+            background-color: #f1f1f1;
+            transform: translateY(-50%) scale(1.1);
         }
 
         /* Container for form */
@@ -100,6 +130,10 @@
 </head>
 <body>
     <header>
+        <!-- Home Page Button -->
+        <a href="/" class="home-button" title="Go to Home Page">
+            <i class="fas fa-home"></i>
+        </a>
         <div class="logo">SupplierDB</div>
     </header>
 
@@ -131,4 +165,3 @@
     </footer>
 </body>
 </html>
-
